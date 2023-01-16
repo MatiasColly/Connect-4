@@ -1,5 +1,6 @@
 import numpy as np
-
+from scoreSystem import calculate_score
+import copy
 
 MAX_ROW = 6
 MAX_COLUMN = 7
@@ -24,11 +25,17 @@ class Board:
     def column_height(self, column):
         return self.columnHeight[column]
 
+    def check_availability_in_column(self, column):
+        if column < MAX_COLUMN and self.columnHeight[column] != MAX_ROW:
+            return "VALID"
+        else:
+            return "INVALID"
+
     def drop_piece(self, column, player):
         if column < MAX_COLUMN and self.columnHeight[column] != MAX_ROW:
             self.add_piece(MAX_ROW - 1 - self.columnHeight[column], column, player)
             self.columnHeight[column] += 1
-            self.update_score()
+            #self.update_score()
             return self.check_win(player)
         else:
             return "INVALID"
@@ -82,76 +89,13 @@ class Board:
     def update_score(self):
         # Same behaviour as detect win, but 0 are counted towards the current player's count. Any possible win is added
         # to player score
-        score = [0, 0]
-        pieceCount = 0
-        for player in range(1, 3):
-            for row in range(MAX_ROW):
-                for column in range(MAX_COLUMN):
-                    if self.board[row, column] == player or self.board[row, column] == 0:
-                        # Weighted score system:
-                        # 4 blank: 1 point
-                        # 1 piece: 2 point
-                        # 2 pieces: 4 points
-                        # 3 pieces: 8 points
+        self.score = calculate_score(self.board)
 
-                        if column < MAX_COLUMN - 3:
-                            # Horizontal win posibility
-                            if ((self.board[row, column + 1] == player or self.board[row, column + 1] == 0) and
-                                    (self.board[row, column + 2] == player or self.board[row, column + 2] == 0) and
-                                    (self.board[row, column + 3] == player or self.board[row, column + 3] == 0)):
-                                pieceCount = pieceCount + 1 if self.board[row, column] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row, column + 1] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row, column + 2] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row, column + 3] == player else pieceCount
-                                score[player - 1] += pieces_to_points[pieceCount]
-                                pieceCount = 0
 
-                        if row < MAX_ROW - 3:
-                            # Vertical win
-                            if ((self.board[row + 1, column] == player or self.board[row + 1, column] == 0) and
-                                    (self.board[row + 2, column] == player or self.board[row + 2, column] == 0) and
-                                    (self.board[row + 3, column] == player or self.board[row + 3, column] == 0)):
-                                pieceCount = pieceCount + 1 if self.board[row, column] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 1, column] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 2, column] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 3, column] == player else pieceCount
-                                score[player - 1] += pieces_to_points[pieceCount]
-                                pieceCount = 0
+def simulate_piece_drop(board: Board, column, player):
+    new_board = copy.deepcopy(board)
+    if new_board.check_availability_in_column(column):
+        new_board.drop_piece(column, player)
+    return new_board
 
-                        if column < MAX_COLUMN - 3 and row < MAX_ROW - 3:
-                            # Right downward win
-                            if ((self.board[row + 1, column + 1] == player or self.board[row + 1, column + 1] == 0) and
-                                    (self.board[row + 2, column + 2] == player or self.board[row + 2, column + 2] == 0) and
-                                    (self.board[row + 3, column + 3] == player or self.board[row + 3, column + 3] == 0)):
-                                pieceCount = pieceCount + 1 if self.board[row, column] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 1, column + 1] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 2, column + 2] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 3, column + 3] == player else pieceCount
-                                score[player - 1] += pieces_to_points[pieceCount]
-                                pieceCount = 0
 
-                        # Protection to avoid exceeding array limits
-                        if row < MAX_ROW - 3 and column >= 3:
-                            # Left downward win
-                            if ((self.board[row + 1, column - 1] == player or self.board[row + 1, column - 1] == 0) and
-                                    (self.board[row + 2, column - 2] == player or self.board[row + 2, column - 2] == 0) and
-                                    (self.board[row + 3, column - 3] == player or self.board[row + 3, column - 3] == 0)):
-                                pieceCount = pieceCount + 1 if self.board[row, column] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 1, column - 1] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 2, column - 2] == player else pieceCount
-                                pieceCount = pieceCount + 1 if self.board[row + 3, column - 3] == player else pieceCount
-                                score[player - 1] += pieces_to_points[pieceCount]
-                                pieceCount = 0
-
-        print("Score 1:", score[0], "- Score 2:", score[1])
-        print("Final Score:", score[0] - score[1])
-        return score[0] - score[1]
-
-# Converts number of aligned pieces to score points
-pieces_to_points = {
-    0 : 1,
-    1 : 2,
-    2 : 4,
-    3 : 8,
-    4 : 999
-}

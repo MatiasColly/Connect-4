@@ -2,6 +2,7 @@ import numpy as np
 import pygame
 import sys
 from boardClass import Board
+from minimax import minimax
 
 # Pygame parameters
 MAX_ROW = 6
@@ -50,6 +51,7 @@ def main():
                     if returnValue == "DRAW":
                         print("Game is a DRAW")
                     currentPlayer = 3 - currentPlayer
+                    minimax(board, 4, currentPlayer)
 
     while 1:
         for event in pygame.event.get():
