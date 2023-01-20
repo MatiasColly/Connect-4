@@ -26,10 +26,12 @@ def minimax(board: Board, depth, currentPlayer):
                 if depth == CURRENT_DEPTH:
                     print(column, ":", score)
                 if currentPlayer == 1 and score > max_score:
-                    BestColumn = column
+                    if depth == CURRENT_DEPTH:
+                        BestColumn = column
                     max_score = score
                 if currentPlayer == 2 and score < min_score:
-                    BestColumn = column
+                    if depth == CURRENT_DEPTH:
+                        BestColumn = column
                     min_score = score
 
             # else:
