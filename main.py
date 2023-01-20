@@ -78,19 +78,21 @@ def main():
 
                     if returnValue == "WIN" or returnValue == "DRAW":
                         draw_game_end(screen, returnValue)
+
                     else:
+                        # Switch turn to other player and analyze it's best move
+                        currentPlayer = 3 - currentPlayer
+                        best_move = analyze_best_move(board, currentPlayer)
+
+                        # Toggle AI's flag to play next turn if autoplay is enabled
+                        if AUTO_PLAY_AI:
+                            ai_to_play = not ai_to_play
+                        else:
+                            ai_to_play = False
+
                         draw_menu_text(screen, board)
 
-                    # Switch turn to other player and analyze it's best move
-                    currentPlayer = 3 - currentPlayer
-                    best_move = analyze_best_move(board, currentPlayer)
-                    print("Pieces:", board.piece_count())
 
-                    # Toggle AI's flag to play next turn if autoplay is enabled
-                    if AUTO_PLAY_AI:
-                        ai_to_play = not ai_to_play
-                    else:
-                        ai_to_play = False
 
             # Hotkeys menu
             if event.type == pygame.KEYDOWN:
