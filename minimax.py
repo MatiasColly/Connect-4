@@ -22,7 +22,12 @@ def minimax(board: Board, depth, currentPlayer):
         for column in range(0, MAX_COLUMN):
             # Checks if current column is not full
             if board.check_availability_in_column(column) == "VALID":
+                currentScore = calculate_score(board.board)
+
                 new_board = simulate_piece_drop(board, column, currentPlayer)
+                currentScore = calculate_score(new_board.board)
+                if (currentScore > 500 and currentPlayer == 1) or (currentScore < -500 and currentPlayer == 2):
+                    return currentScore
                 score = minimax(new_board, depth - 1, 3 - currentPlayer)
                 if depth == CURRENT_DEPTH:
                     print(column, ":", score)
@@ -38,9 +43,6 @@ def minimax(board: Board, depth, currentPlayer):
             # else:
             #     print("Full column: ", column)
 
-        if depth == CURRENT_DEPTH:
-            print("Best column:", BestColumn)
-
         if currentPlayer == 1:
             return max_score
         else:
@@ -51,6 +53,7 @@ def analyze_best_move(board, currentPlayer):
     t0 = time.monotonic()
     global BestColumn
     minimax(board, CURRENT_DEPTH, currentPlayer)
+    print("Best column:", BestColumn)
     t1 = time.monotonic()
     print(f'Time took: {t1-t0:.4f}')
     return BestColumn
