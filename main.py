@@ -4,8 +4,11 @@ import sys
 from boardClass import Board
 from minimax import analyze_best_move
 
+# Game Parameter
+currentPlayer = 1
+
 # AI Parameters
-AUTO_PLAY_AI = True
+AUTO_PLAY_AI = False
 AI_PLAY_FIRST = False
 
 # Pygame parameters
@@ -16,24 +19,26 @@ BLUE_COLOUR = (0, 0, 255)
 BLACK_COLOUR = (0, 0, 0)
 RED_COLOUR = (255, 0, 0)
 YELLOW_COLOUR = (255, 255, 0)
+WHITE_COLOUR = (255, 255, 255)
 
 SQUARE_SIZE = 100
 GRAPH_WIDTH = MAX_COLUMN * SQUARE_SIZE
 GRAPH_HEIGHT = MAX_ROW * SQUARE_SIZE
-GRAPH_SIZE = (GRAPH_WIDTH, GRAPH_HEIGHT)
-
+MENU_WIDTH = 200
+GRAPH_SIZE = (GRAPH_WIDTH + MENU_WIDTH, GRAPH_HEIGHT)
+CURRENT_TURN_DIS_POS = (GRAPH_WIDTH + 100, 90)
 def main():
     # Pygame and board class init
     pygame.init()
 
     screen = pygame.display.set_mode(GRAPH_SIZE)
     draw_board(screen)
-
+    draw_menu_text(screen)
     # Board object
     board = Board()
 
     returnValue = "NO WIN"
-    currentPlayer = 1
+    global currentPlayer
     inputValue = 0
     global AUTO_PLAY_AI
 
@@ -76,6 +81,7 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
                     AUTO_PLAY_AI = not AUTO_PLAY_AI
+                    draw_menu_text(screen)
                     print("Auto play AI:", AUTO_PLAY_AI)
                 if event.key == pygame.K_s:
                     print("Playing best move")
@@ -97,14 +103,51 @@ def draw_board(screen):
                                 (row * SQUARE_SIZE) + SQUARE_SIZE / 2), radius=SQUARE_SIZE * 2/5)
     pygame.display.update()
 
+def draw_menu_text(screen):
+
+    # Cleans previous menu
+    pygame.draw.rect(screen, BLACK_COLOUR, (GRAPH_WIDTH, 0, MENU_WIDTH, GRAPH_HEIGHT))
+
+    # Current turn box
+    textfont = pygame.font.SysFont("monospace", 20)
+    textTBD = textfont.render("Current Turn:", 1, WHITE_COLOUR)
+    screen.blit(textTBD, (GRAPH_WIDTH + 20, 30))
+    if currentPlayer == 1:
+        pygame.draw.circle(screen, RED_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
+    else:
+        pygame.draw.circle(screen, YELLOW_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
+
+    # AI autoplay box
+    textTBD = textfont.render(" AI autoplay:", 1, WHITE_COLOUR)
+    screen.blit(textTBD, (GRAPH_WIDTH + 20, 130))
+    if AUTO_PLAY_AI:
+        textTBD = textfont.render("ON", 1, WHITE_COLOUR)
+        screen.blit(textTBD, (GRAPH_WIDTH + 85, 160))
+    else:
+        textTBD = textfont.render("OFF", 1, WHITE_COLOUR)
+        screen.blit(textTBD, (GRAPH_WIDTH + 80, 160))
+
+    # Hotkeys box
+    textTBD = textfont.render("Hotkeys:", 1, WHITE_COLOUR)
+    screen.blit(textTBD, (GRAPH_WIDTH + 20, 450))
+    textTBD = textfont.render("a: AI ON/OFF", 1, WHITE_COLOUR)
+    screen.blit(textTBD, (GRAPH_WIDTH + 20, 480))
+    textTBD = textfont.render("s: play best", 1, WHITE_COLOUR)
+    screen.blit(textTBD, (GRAPH_WIDTH + 20, 510))
+    textTBD = textfont.render("   move", 1, WHITE_COLOUR)
+    screen.blit(textTBD, (GRAPH_WIDTH + 20, 530))
+
+    pygame.display.update()
 
 def add_piece(row, column, player, screen):
     if player == 1:
         pygame.draw.circle(screen, RED_COLOUR, center=((column * SQUARE_SIZE) + SQUARE_SIZE / 2,
                         (row * SQUARE_SIZE) + SQUARE_SIZE / 2), radius=SQUARE_SIZE * 2 / 5)
+        pygame.draw.circle(screen, YELLOW_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
     else:
         pygame.draw.circle(screen, YELLOW_COLOUR, center=((column * SQUARE_SIZE) + SQUARE_SIZE / 2,
                         (row * SQUARE_SIZE) + SQUARE_SIZE / 2), radius=SQUARE_SIZE * 2 / 5)
+        pygame.draw.circle(screen, RED_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
     pygame.display.update()
 
 
