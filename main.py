@@ -30,15 +30,16 @@ CURRENT_TURN_DIS_POS = (GRAPH_WIDTH + 100, 90)
 
 
 def main():
+
+    # Board object. All game mechanics are coded in Board class
+    board = Board()
+
     # Pygame and board class init
     pygame.init()
 
     screen = pygame.display.set_mode(GRAPH_SIZE)
     draw_board(screen)
-    draw_menu_text(screen)
-
-    # Board object. All game mechanics are coded in Board class
-    board = Board()
+    draw_menu_text(screen, board)
 
     returnValue = "NO WIN"
     global currentPlayer
@@ -77,10 +78,13 @@ def main():
 
                     if returnValue == "WIN" or returnValue == "DRAW":
                         draw_game_end(screen, returnValue)
+                    else:
+                        draw_menu_text(screen, board)
 
                     # Switch turn to other player and analyze it's best move
                     currentPlayer = 3 - currentPlayer
                     best_move = analyze_best_move(board, currentPlayer)
+                    print("Pieces:", board.piece_count())
 
                     # Toggle AI's flag to play next turn if autoplay is enabled
                     if AUTO_PLAY_AI:
@@ -94,7 +98,7 @@ def main():
                 # a: toggles AI's autoplay
                 if event.key == pygame.K_a:
                     AUTO_PLAY_AI = not AUTO_PLAY_AI
-                    draw_menu_text(screen)
+                    draw_menu_text(screen, board)
                     print("Auto play AI:", AUTO_PLAY_AI)
 
                 # s: play's best move according to AI
@@ -121,7 +125,7 @@ def draw_board(screen):
 
 
 # Draw right side menu
-def draw_menu_text(screen):
+def draw_menu_text(screen, board):
 
     # Cleans previous menu
     pygame.draw.rect(screen, BLACK_COLOUR, (GRAPH_WIDTH, 0, MENU_WIDTH, GRAPH_HEIGHT))
@@ -140,10 +144,16 @@ def draw_menu_text(screen):
     screen.blit(textTBD, (GRAPH_WIDTH + 15, 130))
     if AUTO_PLAY_AI:
         textTBD = textfont.render("ON", 1, WHITE_COLOUR)
-        screen.blit(textTBD, (GRAPH_WIDTH + 85, 160))
+        screen.blit(textTBD, (GRAPH_WIDTH + 85, 155))
     else:
         textTBD = textfont.render("OFF", 1, WHITE_COLOUR)
-        screen.blit(textTBD, (GRAPH_WIDTH + 80, 160))
+        screen.blit(textTBD, (GRAPH_WIDTH + 80, 155))
+
+    # Turn number box
+    textTBD = textfont.render("Current Turn:", 1, WHITE_COLOUR)
+    screen.blit(textTBD, (GRAPH_WIDTH + 20, 200))
+    textTBD = textfont.render(str(board.piece_count() + 1), 1, WHITE_COLOUR)
+    screen.blit(textTBD, (GRAPH_WIDTH + 90, 225))
 
     # Hotkeys box
     textTBD = textfont.render("Hotkeys:", 1, WHITE_COLOUR)
@@ -166,20 +176,20 @@ def draw_game_end(screen, returnValue):
     if returnValue == "WIN":
         if currentPlayer == 1:
             textTBD = textfont.render("  Red Player", 1, RED_COLOUR)
-            screen.blit(textTBD, (GRAPH_WIDTH + 20, 200))
+            screen.blit(textTBD, (GRAPH_WIDTH + 20, 300))
             textTBD = textfont.render("     WON!", 1, RED_COLOUR)
-            screen.blit(textTBD, (GRAPH_WIDTH + 20, 220))
+            screen.blit(textTBD, (GRAPH_WIDTH + 20, 320))
         else:
             textTBD = textfont.render(" Yellow Player", 1, YELLOW_COLOUR)
-            screen.blit(textTBD, (GRAPH_WIDTH + 20, 200))
+            screen.blit(textTBD, (GRAPH_WIDTH + 20, 300))
             textTBD = textfont.render("     WON!", 1, YELLOW_COLOUR)
-            screen.blit(textTBD, (GRAPH_WIDTH + 20, 220))
+            screen.blit(textTBD, (GRAPH_WIDTH + 20, 320))
 
     if returnValue == "DRAW":
         textTBD = textfont.render("Game ended in", 1, WHITE_COLOUR)
-        screen.blit(textTBD, (GRAPH_WIDTH + 20, 200))
+        screen.blit(textTBD, (GRAPH_WIDTH + 20, 300))
         textTBD = textfont.render("     DRAW", 1, WHITE_COLOUR)
-        screen.blit(textTBD, (GRAPH_WIDTH + 20, 220))
+        screen.blit(textTBD, (GRAPH_WIDTH + 20, 320))
 
     pygame.display.update()
 

@@ -1,3 +1,4 @@
+import time
 from boardClass import Board
 from boardClass import simulate_piece_drop
 from scoreSystem import calculate_score
@@ -47,7 +48,10 @@ def minimax(board: Board, depth, currentPlayer):
 
 
 def analyze_best_move(board, currentPlayer):
+    t0 = time.monotonic()
     global BestColumn
     minimax(board, CURRENT_DEPTH, currentPlayer)
+    t1 = time.monotonic()
+    print(f'Time took: {t1-t0:.4f}')
     return BestColumn
 

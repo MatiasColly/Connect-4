@@ -25,6 +25,11 @@ class Board:
     def column_height(self, column):
         return self.columnHeight[column]
 
+    def piece_count(self):
+        count = np.count_nonzero(self.board == 1)
+        count = count + np.count_nonzero(self.board == 2)
+        return count
+
     def check_availability_in_column(self, column):
         if column < MAX_COLUMN and self.columnHeight[column] != MAX_ROW:
             return "VALID"
