@@ -35,6 +35,7 @@ def main():
     returnValue = "NO WIN"
     currentPlayer = 1
     inputValue = 0
+    global AUTO_PLAY_AI
 
     if AI_PLAY_FIRST:
         ai_to_play = True
@@ -69,6 +70,18 @@ def main():
                     best_move = analyze_best_move(board, currentPlayer)
                     if AUTO_PLAY_AI:
                         ai_to_play = not ai_to_play
+                    else:
+                        ai_to_play = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_a:
+                    AUTO_PLAY_AI = not AUTO_PLAY_AI
+                    print("Auto play AI:", AUTO_PLAY_AI)
+                if event.key == pygame.K_s:
+                    print("Playing best move")
+                    ai_to_play = True
+
+
 
     while 1:
         for event in pygame.event.get():
