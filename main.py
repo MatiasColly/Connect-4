@@ -4,6 +4,10 @@ import sys
 from boardClass import Board
 from minimax import analyze_best_move
 
+# AI Parameters
+AUTO_PLAY_AI = True
+AI_PLAY_FIRST = False
+
 # Pygame parameters
 MAX_ROW = 6
 MAX_COLUMN = 7
@@ -32,15 +36,26 @@ def main():
     currentPlayer = 1
     inputValue = 0
 
+    if AI_PLAY_FIRST:
+        ai_to_play = True
+        best_move = analyze_best_move(board, currentPlayer)
+    else:
+        ai_to_play = False
+
     while returnValue != "WIN" and returnValue != "DRAW":
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
                 sys.exit()
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                inputValue = int(event.pos[0] / 100)
+            if event.type == pygame.MOUSEBUTTONDOWN or ai_to_play:
+                if ai_to_play:
+                    inputValue = best_move
+                else:
+                    inputValue = int(event.pos[0] / 100)
+
                 returnValue = board.drop_piece(inputValue, currentPlayer)
+
                 if returnValue == "INVALID":
                     print("Invalid input, insert again")
                 else:
@@ -52,6 +67,8 @@ def main():
                         print("Game is a DRAW")
                     currentPlayer = 3 - currentPlayer
                     best_move = analyze_best_move(board, currentPlayer)
+                    if AUTO_PLAY_AI:
+                        ai_to_play = not ai_to_play
 
     while 1:
         for event in pygame.event.get():
