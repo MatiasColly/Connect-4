@@ -6,15 +6,16 @@ from scoreSystem import calculate_score
 MAX_COLUMN = 7
 CURRENT_DEPTH = 4
 BestColumn = 0
+AnalyzedPositions = 0
 
-
-def minimax(board: Board, depth, currentPlayer):
+def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
     min_score = 9999
     max_score = -9999
-    global BestColumn
+    global BestColumn, AnalyzedPositions
 
     if depth == 0:
+        AnalyzedPositions = AnalyzedPositions + 1
         return calculate_score(board.board)
 
     else:
@@ -22,21 +23,41 @@ def minimax(board: Board, depth, currentPlayer):
         for column in range(0, MAX_COLUMN):
             # Checks if current column is not full
             if board.check_availability_in_column(column) == "VALID":
+
                 new_board = simulate_piece_drop(board, column, currentPlayer)
-                currentScore = calculate_score(new_board.board)
-                if (currentScore > 500 and currentPlayer == 1) or (currentScore < -500 and currentPlayer == 2):
-                    return currentScore
-                score = minimax(new_board, depth - 1, 3 - currentPlayer)
+                score = calculate_score(new_board.board)
+                AnalyzedPositions = AnalyzedPositions + 1
+
+                if (score > 500 and currentPlayer == 1) or (score < -500 and currentPlayer == 2):
+                    return score
+
+                # If next iteration in minimax is the last one, there is no need to calculate score because it will be
+                # the same as the one calculated to check if there is a win
+                if depth > 1:
+                    score = minimax(new_board, depth - 1, alpha, beta, 3 - currentPlayer)
+
                 if depth == CURRENT_DEPTH:
                     print(column, ":", score)
+
                 if currentPlayer == 1 and score > max_score:
                     if depth == CURRENT_DEPTH:
                         BestColumn = column
                     max_score = score
+
                 if currentPlayer == 2 and score < min_score:
                     if depth == CURRENT_DEPTH:
                         BestColumn = column
                     min_score = score
+
+                # if currentPlayer == 1:
+                #     alpha = maxNum(alpha, score)
+                #
+                # if currentPlayer == 2:
+                #     beta = minNum(beta, score)
+
+                # if beta <= alpha:
+                    # print("Prune in depth:", depth, "Col:", column)
+                    # break
 
             # else:
             #     print("Full column: ", column)
@@ -48,10 +69,29 @@ def minimax(board: Board, depth, currentPlayer):
 
 
 def analyze_best_move(board, currentPlayer):
+
+    global BestColumn, AnalyzedPositions
+
     t0 = time.monotonic()
-    global BestColumn
-    minimax(board, CURRENT_DEPTH, currentPlayer)
-    print("Best column:", BestColumn)
+    minimax(board, CURRENT_DEPTH, -99999, 99999, currentPlayer)
     t1 = time.monotonic()
+
+    print("Best column:", BestColumn)
     print(f'Time took: {t1-t0:.4f}')
+    print("Analyzed positions:", AnalyzedPositions)
+
+    AnalyzedPositions = 0
     return BestColumn
+
+
+def maxNum(num1, num2):
+    if num1 > num2:
+        return num1
+    else:
+        return num2
+
+def minNum(num1, num2):
+    if num1 < num2:
+        return num1
+    else:
+        return num2
