@@ -5,14 +5,17 @@ from scoreSystem import calculate_score
 
 MAX_COLUMN = 7
 CURRENT_DEPTH = 4
+ENABLE_AB_PRUNE = 0
+
 BestColumn = 0
 AnalyzedPositions = 0
+PrunedPositions = 0
 
 def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
     min_score = 9999
     max_score = -9999
-    global BestColumn, AnalyzedPositions
+    global BestColumn, AnalyzedPositions, PrunedPositions
 
     if depth == 0:
         AnalyzedPositions = AnalyzedPositions + 1
@@ -49,15 +52,16 @@ def minimax(board: Board, depth, alpha, beta, currentPlayer):
                         BestColumn = column
                     min_score = score
 
-                # if currentPlayer == 1:
-                #     alpha = maxNum(alpha, score)
-                #
-                # if currentPlayer == 2:
-                #     beta = minNum(beta, score)
+                if ENABLE_AB_PRUNE:
+                    if currentPlayer == 1:
+                        alpha = maxNum(alpha, score)
 
-                # if beta <= alpha:
-                    # print("Prune in depth:", depth, "Col:", column)
-                    # break
+                    if currentPlayer == 2:
+                        beta = minNum(beta, score)
+
+                    if beta <= alpha:
+                        PrunedPositions = PrunedPositions + pow(7, depth - 1) * (6 - column)
+                        break
 
             # else:
             #     print("Full column: ", column)
@@ -70,7 +74,7 @@ def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
 def analyze_best_move(board, currentPlayer):
 
-    global BestColumn, AnalyzedPositions
+    global BestColumn, AnalyzedPositions, PrunedPositions
 
     t0 = time.monotonic()
     minimax(board, CURRENT_DEPTH, -99999, 99999, currentPlayer)
@@ -79,8 +83,9 @@ def analyze_best_move(board, currentPlayer):
     print("Best column:", BestColumn)
     print(f'Time took: {t1-t0:.4f}')
     print("Analyzed positions:", AnalyzedPositions)
-
+    print("Pruned positions:", PrunedPositions)
     AnalyzedPositions = 0
+    PrunedPositions = 0
     return BestColumn
 
 

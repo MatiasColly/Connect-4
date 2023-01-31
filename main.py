@@ -10,7 +10,7 @@ MAX_ROW = 6
 MAX_COLUMN = 7
 
 # AI Parameters
-AUTO_PLAY_AI = False
+AUTO_PLAY_AI = True
 AI_PLAY_FIRST = False
 
 # RGB Colours
