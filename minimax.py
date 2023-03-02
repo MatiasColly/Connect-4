@@ -1,11 +1,12 @@
 import time
+import math
 from boardClass import Board
 from boardClass import simulate_piece_drop
 from scoreSystem import calculate_score
 
 MAX_COLUMN = 7
-CURRENT_DEPTH = 4
-ENABLE_AB_PRUNE = 0
+CURRENT_DEPTH = 6
+ENABLE_AB_PRUNE = 1
 
 BestColumn = 0
 AnalyzedPositions = 0
@@ -13,8 +14,8 @@ PrunedPositions = 0
 
 def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
-    min_score = 9999
-    max_score = -9999
+    min_score = 9999999999999
+    max_score = -9999999999999
     global BestColumn, AnalyzedPositions, PrunedPositions
 
     if depth == 0:
@@ -32,7 +33,10 @@ def minimax(board: Board, depth, alpha, beta, currentPlayer):
                 AnalyzedPositions = AnalyzedPositions + 1
 
                 if (score > 500 and currentPlayer == 1) or (score < -500 and currentPlayer == 2):
-                    return score
+                    if depth == CURRENT_DEPTH:
+                        print(column, ":", score)
+                        BestColumn = column
+                    return score * math.pow(10, depth)
 
                 # If next iteration in minimax is the last one, there is no need to calculate score because it will be
                 # the same as the one calculated to check if there is a win
@@ -74,10 +78,11 @@ def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
 def analyze_best_move(board, currentPlayer):
 
-    global BestColumn, AnalyzedPositions, PrunedPositions
+    global BestColumn, AnalyzedPositions, PrunedPositions, CURRENT_DEPTH
 
+    print("Player", currentPlayer, "to play")
     t0 = time.monotonic()
-    minimax(board, CURRENT_DEPTH, -99999, 99999, currentPlayer)
+    minimax(board, CURRENT_DEPTH, -9999999999999, 9999999999999, currentPlayer)
     t1 = time.monotonic()
 
     print("Best column:", BestColumn)
