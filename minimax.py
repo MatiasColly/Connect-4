@@ -4,9 +4,13 @@ from boardClass import Board
 from boardClass import simulate_piece_drop
 from scoreSystem import calculate_score
 
+INF = 9e26
+
 MAX_COLUMN = 7
 CURRENT_DEPTH = 6
 ENABLE_AB_PRUNE = 1
+DYNAMIC_DEPTH = 1
+TIME_THR_FOR_DYNAMIC_DEPTH = 1.3
 
 BestColumn = 0
 AnalyzedPositions = 0
@@ -14,8 +18,8 @@ PrunedPositions = 0
 
 def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
-    min_score = 9999999999999
-    max_score = -9999999999999
+    min_score = INF
+    max_score = -INF
     global BestColumn, AnalyzedPositions, PrunedPositions
 
     if depth == 0:
@@ -78,19 +82,26 @@ def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
 def analyze_best_move(board, currentPlayer):
 
-    global BestColumn, AnalyzedPositions, PrunedPositions, CURRENT_DEPTH
+    global BestColumn, AnalyzedPositions, PrunedPositions, CURRENT_DEPTH, DYNAMIC_DEPTH
 
     print("Player", currentPlayer, "to play")
     t0 = time.monotonic()
-    minimax(board, CURRENT_DEPTH, -9999999999999, 9999999999999, currentPlayer)
+    minimax(board, CURRENT_DEPTH, -INF, INF, currentPlayer)
     t1 = time.monotonic()
-
+    takenTime = t1 - t0
     print("Best column:", BestColumn)
-    print(f'Time took: {t1-t0:.4f}')
+    print(f'Taken time: {takenTime:.4f}')
     print("Analyzed positions:", AnalyzedPositions)
     print("Pruned positions:", PrunedPositions)
     AnalyzedPositions = 0
     PrunedPositions = 0
+
+    # When dynamic depth is enabled, if last computation was fast, an extra depth is added to analysis to get better
+    # results
+    if DYNAMIC_DEPTH and takenTime < TIME_THR_FOR_DYNAMIC_DEPTH and CURRENT_DEPTH < 22:
+        CURRENT_DEPTH = CURRENT_DEPTH + 1
+        print("Depth increased:", CURRENT_DEPTH)
+
     return BestColumn
 
 
@@ -99,6 +110,7 @@ def maxNum(num1, num2):
         return num1
     else:
         return num2
+
 
 def minNum(num1, num2):
     if num1 < num2:
