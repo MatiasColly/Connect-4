@@ -10,7 +10,7 @@ MAX_ROW = 6
 MAX_COLUMN = 7
 
 # AI Parameters
-AUTO_PLAY_AI = True
+AUTO_PLAY_AI = False
 AI_PLAY_FIRST = False
 
 # RGB Colours
@@ -132,9 +132,9 @@ def draw_menu_text(screen, board):
     # Cleans previous menu
     pygame.draw.rect(screen, BLACK_COLOUR, (GRAPH_WIDTH, 0, MENU_WIDTH, GRAPH_HEIGHT))
 
-    # Current turn box
+    # Player to play box
     textfont = pygame.font.SysFont("monospace", 20)
-    textTBD = textfont.render("Current Turn:", 1, WHITE_COLOUR)
+    textTBD = textfont.render("  Play next:", 1, WHITE_COLOUR)
     screen.blit(textTBD, (GRAPH_WIDTH + 20, 30))
     if currentPlayer == 1:
         pygame.draw.circle(screen, RED_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
