@@ -7,7 +7,7 @@ from scoreSystem import calculate_score
 INF = 9e26
 
 MAX_COLUMN = 7
-CURRENT_DEPTH = 6
+CURRENT_DEPTH = 8
 ENABLE_AB_PRUNE = 1
 DYNAMIC_DEPTH = 1
 TIME_THR_FOR_DYNAMIC_DEPTH = 1.3
@@ -15,6 +15,7 @@ TIME_THR_FOR_DYNAMIC_DEPTH = 1.3
 BestColumn = 0
 AnalyzedPositions = 0
 PrunedPositions = 0
+ORDER_FOR_AB_PRUNING = [3,2,4,1,5,0,6]
 
 def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
@@ -28,7 +29,7 @@ def minimax(board: Board, depth, alpha, beta, currentPlayer):
 
     else:
         # print("Iter in depth:", depth)
-        for column in range(0, MAX_COLUMN):
+        for column in ORDER_FOR_AB_PRUNING:
             # Checks if current column is not full
             if board.check_availability_in_column(column) == "VALID":
 
@@ -85,9 +86,15 @@ def analyze_best_move(board, currentPlayer):
     global BestColumn, AnalyzedPositions, PrunedPositions, CURRENT_DEPTH, DYNAMIC_DEPTH
 
     print("Player", currentPlayer, "to play")
+
+    emptySpaces = 42 - board.piece_count()
+    if emptySpaces <= CURRENT_DEPTH:
+        CURRENT_DEPTH = emptySpaces
+
     t0 = time.monotonic()
     minimax(board, CURRENT_DEPTH, -INF, INF, currentPlayer)
     t1 = time.monotonic()
+
     takenTime = t1 - t0
     print("Best column:", BestColumn)
     print(f'Taken time: {takenTime:.4f}')
