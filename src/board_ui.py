@@ -1,5 +1,4 @@
 import pygame
-import numpy as np
 
 # Connect 4 board
 MAX_ROW = 6
@@ -50,7 +49,7 @@ class BoardUI:
 
         # Player to play box
         textfont = pygame.font.SysFont("monospace", 20)
-        textTBD = textfont.render("  Play next:", 1, WHITE_COLOUR)
+        textTBD = textfont.render("  Play next:", True, WHITE_COLOUR)
         self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 30))
         if self.current_player == 1:
             pygame.draw.circle(self.screen, RED_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
@@ -58,29 +57,29 @@ class BoardUI:
             pygame.draw.circle(self.screen, YELLOW_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
 
         # AI autoplay box
-        textTBD = textfont.render(" AI autoplay:", 1, WHITE_COLOUR)
+        textTBD = textfont.render(" AI autoplay:", True, WHITE_COLOUR)
         self.screen.blit(textTBD, (GRAPH_WIDTH + 15, 130))
         if self.auto_ai:
-            textTBD = textfont.render("ON", 1, WHITE_COLOUR)
+            textTBD = textfont.render("ON", True, WHITE_COLOUR)
             self.screen.blit(textTBD, (GRAPH_WIDTH + 85, 155))
         else:
-            textTBD = textfont.render("OFF", 1, WHITE_COLOUR)
+            textTBD = textfont.render("OFF", True, WHITE_COLOUR)
             self.screen.blit(textTBD, (GRAPH_WIDTH + 80, 155))
 
         # Turn number box
-        textTBD = textfont.render("Current Turn:", 1, WHITE_COLOUR)
+        textTBD = textfont.render("Current Turn:", True, WHITE_COLOUR)
         self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 200))
-        textTBD = textfont.render(str(board.piece_count() + 1), 1, WHITE_COLOUR)
+        textTBD = textfont.render(str(board.piece_count() + 1), True, WHITE_COLOUR)
         self.screen.blit(textTBD, (GRAPH_WIDTH + 90, 225))
 
         # Hotkeys box
-        textTBD = textfont.render("Hotkeys:", 1, WHITE_COLOUR)
+        textTBD = textfont.render("Hotkeys:", True, WHITE_COLOUR)
         self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 450))
-        textTBD = textfont.render("a: AI ON/OFF", 1, WHITE_COLOUR)
+        textTBD = textfont.render("a: AI ON/OFF", True, WHITE_COLOUR)
         self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 480))
-        textTBD = textfont.render("s: play best", 1, WHITE_COLOUR)
+        textTBD = textfont.render("s: play best", True, WHITE_COLOUR)
         self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 510))
-        textTBD = textfont.render("   move", 1, WHITE_COLOUR)
+        textTBD = textfont.render("   move", True, WHITE_COLOUR)
         self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 530))
 
         pygame.display.update()
@@ -92,20 +91,20 @@ class BoardUI:
 
         if return_value == "WIN":
             if self.current_player == 1:
-                textTBD = textfont.render("  Red Player", 1, RED_COLOUR)
+                textTBD = textfont.render("  Red Player", True, RED_COLOUR)
                 self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 300))
-                textTBD = textfont.render("     WON!", 1, RED_COLOUR)
+                textTBD = textfont.render("     WON!", True, RED_COLOUR)
                 self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 320))
             else:
-                textTBD = textfont.render(" Yellow Player", 1, YELLOW_COLOUR)
+                textTBD = textfont.render(" Yellow Player", True, YELLOW_COLOUR)
                 self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 300))
-                textTBD = textfont.render("     WON!", 1, YELLOW_COLOUR)
+                textTBD = textfont.render("     WON!", True, YELLOW_COLOUR)
                 self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 320))
 
         if return_value == "DRAW":
-            textTBD = textfont.render("Game ended in", 1, WHITE_COLOUR)
+            textTBD = textfont.render("Game ended in", True, WHITE_COLOUR)
             self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 300))
-            textTBD = textfont.render("     DRAW", 1, WHITE_COLOUR)
+            textTBD = textfont.render("     DRAW", True, WHITE_COLOUR)
             self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 320))
 
         pygame.display.update()
@@ -119,9 +118,8 @@ class BoardUI:
             colour = YELLOW_COLOUR
 
         pygame.draw.circle(self.screen, colour, center=((column * SQUARE_SIZE) + SQUARE_SIZE / 2,
-                                                          (row * SQUARE_SIZE) + SQUARE_SIZE / 2),
+                                                        (row * SQUARE_SIZE) + SQUARE_SIZE / 2),
                            radius=SQUARE_SIZE * 2 / 5)
         pygame.draw.circle(self.screen, colour, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
 
         pygame.display.update()
-
