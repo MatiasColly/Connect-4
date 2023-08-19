@@ -7,10 +7,10 @@ from scoreSystem import calculate_score
 INF = 9e26
 
 MAX_COLUMN = 7
-CURRENT_DEPTH = 8
+CURRENT_DEPTH = 6
 ENABLE_AB_PRUNE = 1
 DYNAMIC_DEPTH = 1
-TIME_THR_FOR_DYNAMIC_DEPTH = 1.3
+TIME_THR_FOR_DYNAMIC_DEPTH = 0.3
 
 BestColumn = 0
 AnalyzedPositions = 0
