@@ -23,12 +23,12 @@ def main():
     board = Board()
     ui = board_ui.BoardUI(current_player, AUTO_PLAY_AI, board)
 
-    returnValue = "NO WIN"
+    return_value = "NO WIN"
     ai_to_play = AI_PLAY_FIRST
     best_move = analyze_best_move(board, current_player)
 
     # Main pygame loop
-    while returnValue != "WIN" and returnValue != "DRAW":
+    while return_value != "WIN" and return_value != "DRAW":
         for event in pygame.event.get():
 
             # Top right corner 'X' for game quitting
@@ -43,21 +43,21 @@ def main():
                     inputValue = int(event.pos[0] / 100)
 
                 # Update object with the new piece placement
-                returnValue = board.drop_piece(inputValue, current_player)
+                return_value = board.drop_piece(inputValue, current_player)
 
                 # Return "INVALID" if column is full or mouse button press is out of game's boundaries
-                if returnValue == "INVALID":
+                if return_value == "INVALID":
                     print("Invalid input, insert again")
 
                 else:
-                    # Log debbuging print
+                    # Log debuging print
                     board.print_board()
 
                     # Pygame's piece add to game screen
                     ui.add_piece(MAX_ROW - board.column_height(inputValue), inputValue, current_player)
 
-                    if returnValue == "WIN" or returnValue == "DRAW":
-                        ui.draw_game_end(returnValue)
+                    if return_value == "WIN" or return_value == "DRAW":
+                        ui.draw_game_end(return_value)
 
                     else:
                         # Switch turn to other player and analyze it's best move

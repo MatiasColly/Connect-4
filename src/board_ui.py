@@ -86,11 +86,11 @@ class BoardUI:
         pygame.display.update()
 
     # Screen print when game ends
-    def draw_game_end(self, returnValue):
+    def draw_game_end(self, return_value):
 
         textfont = pygame.font.SysFont("monospace", 20)
 
-        if returnValue == "WIN":
+        if return_value == "WIN":
             if self.current_player == 1:
                 textTBD = textfont.render("  Red Player", 1, RED_COLOUR)
                 self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 300))
@@ -102,7 +102,7 @@ class BoardUI:
                 textTBD = textfont.render("     WON!", 1, YELLOW_COLOUR)
                 self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 320))
 
-        if returnValue == "DRAW":
+        if return_value == "DRAW":
             textTBD = textfont.render("Game ended in", 1, WHITE_COLOUR)
             self.screen.blit(textTBD, (GRAPH_WIDTH + 20, 300))
             textTBD = textfont.render("     DRAW", 1, WHITE_COLOUR)
