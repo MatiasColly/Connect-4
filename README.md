@@ -1,4 +1,4 @@
-# Connect 4 game and AI
+# Connect 4 game AI
 
 ## Objective:
 
