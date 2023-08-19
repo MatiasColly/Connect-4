@@ -112,15 +112,16 @@ class BoardUI:
 
     # Adds recent played piece in to the grid
     def add_piece(self, row, column, player):
+
         if player == 1:
-            pygame.draw.circle(self.screen, RED_COLOUR, center=((column * SQUARE_SIZE) + SQUARE_SIZE / 2,
-                                                           (row * SQUARE_SIZE) + SQUARE_SIZE / 2),
-                               radius=SQUARE_SIZE * 2 / 5)
-            pygame.draw.circle(self.screen, YELLOW_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
+            colour = RED_COLOUR
         else:
-            pygame.draw.circle(self.screen, YELLOW_COLOUR, center=((column * SQUARE_SIZE) + SQUARE_SIZE / 2,
-                                                              (row * SQUARE_SIZE) + SQUARE_SIZE / 2),
-                               radius=SQUARE_SIZE * 2 / 5)
-            pygame.draw.circle(self.screen, RED_COLOUR, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
+            colour = YELLOW_COLOUR
+
+        pygame.draw.circle(self.screen, colour, center=((column * SQUARE_SIZE) + SQUARE_SIZE / 2,
+                                                          (row * SQUARE_SIZE) + SQUARE_SIZE / 2),
+                           radius=SQUARE_SIZE * 2 / 5)
+        pygame.draw.circle(self.screen, colour, center=CURRENT_TURN_DIS_POS, radius=SQUARE_SIZE * 1 / 5)
+
         pygame.display.update()
 
