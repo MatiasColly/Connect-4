@@ -40,7 +40,7 @@ class Board:
         if column < MAX_COLUMN and self.columnHeight[column] != MAX_ROW:
             self.add_piece(MAX_ROW - 1 - self.columnHeight[column], column, player)
             self.columnHeight[column] += 1
-            #self.update_score()
+            # self.update_score()
             return self.check_win(player)
         else:
             return "INVALID"
@@ -102,5 +102,3 @@ def simulate_piece_drop(board: Board, column, player):
     if new_board.check_availability_in_column(column):
         new_board.drop_piece(column, player)
     return new_board
-
-
