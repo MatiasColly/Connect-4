@@ -8,7 +8,7 @@ MAX_COLUMN = 7
 
 class Board:
     def __init__(self):
-        self.board = np.zeros((MAX_ROW, MAX_COLUMN))
+        self.board = np.zeros((MAX_ROW, MAX_COLUMN), dtype=np.uint8)
         self.columnHeight = np.zeros(MAX_COLUMN, dtype=np.uint8)
         self.score = 0
 
@@ -18,6 +18,18 @@ class Board:
 
     def return_board(self):
         return self.board
+
+    def return_board_for_nn(self, player):
+        board = np.zeros((MAX_ROW, MAX_COLUMN), dtype=np.float)
+        for row in range(MAX_ROW):
+            for column in range(MAX_COLUMN):
+                if self.board[row, column] == player:
+                    board[row, column] = 1
+                elif self.board[row, column] == 0:
+                    board[row, column] = 0.5
+                else:
+                    board[row, column] = 0
+        return board
 
     def add_piece(self, row, column, player):
         self.board[row, column] = player

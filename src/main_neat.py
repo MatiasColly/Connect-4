@@ -23,7 +23,8 @@ def test_ai():
             print("Invalid input, insert again")
 
         else:
-            board.print_board()
+            #board.print_board()
+            print(board.return_board_for_nn(current_player))
             ui.add_piece(MAX_ROW - board.column_height(inputValue), inputValue, current_player)
 
             if return_value == "WIN" or return_value == "DRAW":
@@ -34,12 +35,12 @@ def test_ai():
                 # Switch turn to other player and analyze it's best move
                 current_player = 3 - current_player
                 ui.draw_menu_text(board)
-                time.sleep(0.2)
+                time.sleep(0.3)
 
 
 def main():
     test_ai()
-    time.sleep(4)
+    time.sleep(3)
     sys.exit()
 
 
