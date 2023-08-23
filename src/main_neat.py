@@ -5,6 +5,7 @@ import random
 import time
 import os
 import neat
+import pickle
 
 # Game Parameters
 MAX_ROW = 6
@@ -59,7 +60,8 @@ def eval_genomes(genomes, config):
     """
     Run each genome against eachother one time to determine the fitness.
     """
-
+    for i, (genome_id1, genome1) in enumerate(genomes):
+        genome1.fitness = 0
     for i, (genome_id1, genome1) in enumerate(genomes):
 
         print(round(i/len(genomes) * 100), end=" ")
@@ -84,8 +86,8 @@ def run_neat(config):
     p.add_reporter(neat.Checkpointer(1))
 
     winner = p.run(eval_genomes, 50)
-    # with open("best.pickle", "wb") as f:
-    #     pickle.dump(winner, f)
+    with open("best.pickle", "wb") as f:
+        pickle.dump(winner, f)
 
 
 def main():
@@ -100,7 +102,7 @@ def main():
     run_neat(config)
     #test_best_network(config)
 
-    print(f"Result:{result} - player: {player}")
+    print(f"ENDED!!")
     time.sleep(3)
     sys.exit()
 
