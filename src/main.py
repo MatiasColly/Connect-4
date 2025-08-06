@@ -54,7 +54,7 @@ def main():
                     board.print_board()
 
                     # Pygame's piece add to game screen
-                    ui.add_piece(MAX_ROW - board.column_height(inputValue), inputValue, current_player)
+                    ui.add_piece(int(MAX_ROW - board.column_height(inputValue)), inputValue, current_player)
 
                     if return_value == "WIN" or return_value == "DRAW":
                         ui.draw_game_end(return_value)
