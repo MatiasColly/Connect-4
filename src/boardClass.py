@@ -19,17 +19,27 @@ class Board:
     def return_board(self):
         return self.board
 
-    def return_board_for_nn(self, player):
-        board = np.zeros((MAX_ROW, MAX_COLUMN), dtype=float)
-        for row in range(MAX_ROW):
-            for column in range(MAX_COLUMN):
-                if self.board[row, column] == player:
-                    board[row, column] = 1
-                elif self.board[row, column] == 0:
-                    board[row, column] = 0.5
-                else:
-                    board[row, column] = 0
-        return board
+    def return_board_for_nn(self, player, planes=2):
+        """
+        Encode board for NN from the perspective of `player`.
+
+        planes=2 (default): returns two binary planes [own, opp] with shape (2, 6, 7)
+            - own: 1 where self.board == player else 0
+            - opp: 1 where self.board == 3 - player else 0
+
+        planes=3: returns [own, opp, empty]
+            - empty: 1 where self.board == 0 else 0
+        """
+        own = (self.board == player).astype(np.float32)
+        opp = (self.board == (3 - player)).astype(np.float32)
+
+        if planes == 2:
+            return np.stack([own, opp], axis=0)
+        elif planes == 3:
+            empty = (self.board == 0).astype(np.float32)
+            return np.stack([own, opp, empty], axis=0)
+        else:
+            raise ValueError("planes must be 2 or 3")
 
     def add_piece(self, row, column, player):
         self.board[row, column] = player
@@ -111,6 +121,6 @@ class Board:
 
 def simulate_piece_drop(board: Board, column, player):
     new_board = copy.deepcopy(board)
-    if new_board.check_availability_in_column(column):
+    if new_board.check_availability_in_column(column) == "VALID":
         new_board.drop_piece(column, player)
     return new_board

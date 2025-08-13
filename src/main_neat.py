@@ -12,7 +12,6 @@ import numpy as np
 MAX_ROW = 6
 MAX_COLUMN = 7
 
-SHOW_BOARD = True
 
 def train_ai(genome1, genome2, config):
 
@@ -62,6 +61,9 @@ def eval_genomes(genomes, config):
     """
     Round-robin: each genome plays several matches against every other genome.
     Each pair plays 'n_games_per_pair' games and swaps starting player to remove bias.
+    Prints per-generation statistics:
+      - Average final pieces per match
+      - Total invalid-losses (and breakdown by player)
     """
     # convert to list for stable indexing
     genome_list = list(genomes)
@@ -71,7 +73,14 @@ def eval_genomes(genomes, config):
     for gid, g in genome_list:
         g.fitness = 0.0
 
-    n_games_per_pair = 2
+    # Stats accumulators
+    total_games = 0
+    sum_final_pieces = 0
+    invalid_losses_total = 0
+    invalid_losses_p1 = 0
+    invalid_losses_p2 = 0
+
+    n_games_per_pair = 1
 
     for i in range(n):
         gid1, genome1 = genome_list[i]
@@ -85,14 +94,23 @@ def eval_genomes(genomes, config):
 
                 # if starting_player == 2, swap genomes when calling train_ai so the second genome goes first
                 if starting_player == 1:
-                    result, winning_player, invalid_by = train_ai_with_record(genome1, genome2, config, SHOW_BOARD)
-                    # train_ai_with_record will return (result_str, winning_player_num, invalid_by_player_or_None)
+                    result, winning_player, invalid_by, final_pieces = train_ai_with_record(genome1, genome2, config)
                     # winning_player: 1 or 2 relative to the order passed to train_ai_with_record
                 else:
-                    result, winning_player, invalid_by = train_ai_with_record(genome2, genome1, config, SHOW_BOARD)
+                    result, winning_player, invalid_by, final_pieces = train_ai_with_record(genome2, genome1, config)
                     # invert the winner to map relative -> absolute player
                     if winning_player is not None:
                         winning_player = 3 - winning_player
+
+                # Update stats
+                total_games += 1
+                sum_final_pieces += final_pieces
+                if invalid_by == 1:
+                    invalid_losses_total += 1
+                    invalid_losses_p1 += 1
+                elif invalid_by == 2:
+                    invalid_losses_total += 1
+                    invalid_losses_p2 += 1
 
                 # scoring
                 if result == "WIN":
@@ -110,9 +128,19 @@ def eval_genomes(genomes, config):
                 elif invalid_by == 2:
                     genome2.fitness -= 0.5
 
+    # Print per-generation stats
+    avg_pieces = (sum_final_pieces / total_games) if total_games > 0 else 0.0
+    print(f"Gen match stats: games={total_games}, avg_final_pieces={avg_pieces:.2f}, "
+          f"invalid_losses_total={invalid_losses_total} (P1={invalid_losses_p1}, P2={invalid_losses_p2})")
+
+
 def train_ai_with_record(genome1, genome2, config, draw_ui=False):
     """
-    Plays a game between two genomes and returns result, winning player, and invalid move info.
+    Plays a game between two genomes and returns:
+    - result_str: "WIN", "LOSE", or "DRAW" relative to genome1
+    - winning_player: 1, 2, or None (relative to genome1/genome2 order)
+    - invalid_by: 1 or 2 if a player lost by invalid placement, else None
+    - final_pieces: total number of pieces on the board when the game ended
     """
     board = Board()
     current_player = 1
@@ -166,11 +194,16 @@ def train_ai_with_record(genome1, genome2, config, draw_ui=False):
         result_str = "DRAW"
         winning_player = None
 
-    return result_str, winning_player, invalid_by
+    # Total pieces on the board at the end
+    final_pieces = board.piece_count()
+
+    return result_str, winning_player, invalid_by, final_pieces
+
 
 def run_neat(config):
-    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-149')
-    # p = neat.Population(config)
+    # p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-35a')
+    # p.config.fitness_threshold = 200000
+    p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
