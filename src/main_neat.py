@@ -12,6 +12,7 @@ import numpy as np
 MAX_ROW = 6
 MAX_COLUMN = 7
 
+SHOW_BOARD = True
 
 def train_ai(genome1, genome2, config):
 
@@ -66,11 +67,11 @@ def eval_genomes(genomes, config):
     genome_list = list(genomes)
     n = len(genome_list)
 
-    # init fitness
+    # reset fitness every generation (avoid accumulation across generations)
     for gid, g in genome_list:
-        g.fitness = 0.0 if g.fitness is None else g.fitness
+        g.fitness = 0.0
 
-    n_games_per_pair = 1
+    n_games_per_pair = 2
 
     for i in range(n):
         gid1, genome1 = genome_list[i]
@@ -84,11 +85,11 @@ def eval_genomes(genomes, config):
 
                 # if starting_player == 2, swap genomes when calling train_ai so the second genome goes first
                 if starting_player == 1:
-                    result, winning_player, invalid_by = train_ai_with_record(genome1, genome2, config)
+                    result, winning_player, invalid_by = train_ai_with_record(genome1, genome2, config, SHOW_BOARD)
                     # train_ai_with_record will return (result_str, winning_player_num, invalid_by_player_or_None)
                     # winning_player: 1 or 2 relative to the order passed to train_ai_with_record
                 else:
-                    result, winning_player, invalid_by = train_ai_with_record(genome2, genome1, config)
+                    result, winning_player, invalid_by = train_ai_with_record(genome2, genome1, config, SHOW_BOARD)
                     # invert the winner to map relative -> absolute player
                     if winning_player is not None:
                         winning_player = 3 - winning_player
@@ -168,14 +169,14 @@ def train_ai_with_record(genome1, genome2, config, draw_ui=False):
     return result_str, winning_player, invalid_by
 
 def run_neat(config):
-    # p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-35')
-    p = neat.Population(config)
+    p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-149')
+    # p = neat.Population(config)
     p.add_reporter(neat.StdOutReporter(True))
     stats = neat.StatisticsReporter()
     p.add_reporter(stats)
     p.add_reporter(neat.Checkpointer(1))
 
-    winner = p.run(eval_genomes, 50)
+    winner = p.run(eval_genomes, 5000)
     with open("best.pickle", "wb") as f:
         pickle.dump(winner, f)
 
