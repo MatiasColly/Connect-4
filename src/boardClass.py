@@ -20,7 +20,7 @@ class Board:
         return self.board
 
     def return_board_for_nn(self, player):
-        board = np.zeros((MAX_ROW, MAX_COLUMN), dtype=np.float)
+        board = np.zeros((MAX_ROW, MAX_COLUMN), dtype=float)
         for row in range(MAX_ROW):
             for column in range(MAX_COLUMN):
                 if self.board[row, column] == player:

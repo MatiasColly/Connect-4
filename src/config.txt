@@ -1,23 +1,23 @@
 [NEAT]
 fitness_criterion     = max
-fitness_threshold     = 100
-pop_size              = 10
+fitness_threshold     = 20000
+pop_size              = 150
 reset_on_extinction   = False
 
 [DefaultStagnation]
-species_fitness_func = mean
-max_stagnation       = 4
+species_fitness_func = max
+max_stagnation       = 15
 species_elitism      = 2
 
 [DefaultReproduction]
-elitism            = 3
+elitism            = 5
 survival_threshold = 0.2
 
 [DefaultGenome]
 # node activation options
-activation_default      = sigmoid
-activation_mutate_rate  = 1.0
-activation_options      = sigmoid
+activation_default      = relu
+activation_mutate_rate  = 0.5
+activation_options      = sigmoid tanh
 
 # node aggregation options
 aggregation_default     = sum
@@ -25,12 +25,12 @@ aggregation_mutate_rate = 0.0
 aggregation_options     = sum
 
 # node bias options
-bias_init_mean          = 0.5
+bias_init_mean          = 0.0
 bias_init_stdev         = 1.0
 bias_max_value          = 30.0
 bias_min_value          = -30.0
 bias_mutate_power       = 0.5
-bias_mutate_rate        = 0.7
+bias_mutate_rate        = 0.8
 bias_replace_rate       = 0.1
 
 # genome compatibility options
@@ -38,8 +38,8 @@ compatibility_disjoint_coefficient = 1.0
 compatibility_weight_coefficient   = 0.5
 
 # connection add/remove rates
-conn_add_prob           = 0.5
-conn_delete_prob        = 0.5
+conn_add_prob           = 0.3
+conn_delete_prob        = 0.2
 
 # connection enable options
 enabled_default         = True
@@ -49,11 +49,11 @@ feed_forward            = True
 initial_connection      = full_direct
 
 # node add/remove rates
-node_add_prob           = 0.2
-node_delete_prob        = 0.2
+node_add_prob           = 0.02
+node_delete_prob        = 0.01
 
 # network parameters
-num_hidden              = 50
+num_hidden              = 0
 num_inputs              = 42
 num_outputs             = 7
 
@@ -67,7 +67,7 @@ response_mutate_rate    = 0.0
 response_replace_rate   = 0.0
 
 # connection weight options
-weight_init_mean        = 0.5
+weight_init_mean        = 0.0
 weight_init_stdev       = 1.0
 weight_max_value        = 30
 weight_min_value        = -30
